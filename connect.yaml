@@ -3,7 +3,7 @@ deployAs:
     applicationType: merchant-center-custom-application
     configuration:
       standardConfiguration:
-        - key: APPLICATION_ID
+        - key: CUSTOM_APPLICATION_ID
           description: The Custom Application ID
           required: true
         - key: APPLICATION_URL

@@ -10,7 +10,7 @@ const config = {
   mcApiUrl: '${env:MC_API_URL}',
   env: {
     production: {
-      applicationId: '${env:APPLICATION_ID}',
+      applicationId: '${env:CUSTOM_APPLICATION_ID}',
       url: '${env:APPLICATION_URL}',
     },
     development: {
