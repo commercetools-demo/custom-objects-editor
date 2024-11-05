@@ -89,24 +89,29 @@ export const useCustomObjectUpdater = () => {
     onCompleted?: () => void;
     onError?: (message?: string) => void;
   }) => {
-
     try {
-      const response = await axios.post(customObjectEndpoint, {
-        container: draft.container,
-        key: draft.key,
-        value: draft.value,
-        schemaType: draft.container,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(async (res) => {
-        if (res?.status === 200) {
-          return res.data;
-        }
-        throw res.status;
-      });
-      
+      const response = await axios
+        .post(
+          customObjectEndpoint,
+          {
+            container: draft.container,
+            key: draft.key,
+            value: draft.value,
+            schemaType: draft.container,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(async (res) => {
+          if (res?.status === 200) {
+            return res.data;
+          }
+          throw res.status;
+        });
+
       onCompleted && onCompleted();
     } catch (error) {
       onError && onError(error.message);
