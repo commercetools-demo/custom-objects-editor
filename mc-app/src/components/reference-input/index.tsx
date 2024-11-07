@@ -1,33 +1,32 @@
 import React from 'react';
 import get from 'lodash/get';
-import { CategorySearchInput } from './category-search-input';
-
-type Props = {
-  onChange(...args: unknown[]): unknown;
-  onBlur(...args: unknown[]): unknown;
-  name: string;
-  value?: any;
-  hasError?: boolean;
-  reference?: {
-    by?: string;
-    type?: string;
-  };
-};
+import CategorySearchInput from './search-components/category';
+import { ReferenceInputProps } from './search-input/types';
+import CustomerSearchInput from './search-components/customer';
 
 const ReferenceInput: React.FC<
-  React.HTMLAttributes<HTMLDivElement> & Props
+  React.HTMLAttributes<HTMLDivElement> & ReferenceInputProps
 > = ({ reference, value, ...props }) => {
   const referenceBy: 'id' | 'key' = get(reference, 'by', 'id') as 'id' | 'key';
-  const referenceType: string = get(reference, 'type');
+  const referenceType = get(reference, 'type');
   const refValue = get(value, referenceBy, '');
 
-  switch (reference?.type) {
+  switch (referenceType) {
     case 'category':
       return (
         <CategorySearchInput
           value={refValue}
           referenceBy={referenceBy}
-          referenceType={referenceType}
+          referenceType="category"
+          {...props}
+        />
+      );
+    case 'customer':
+      return (
+        <CustomerSearchInput
+          value={refValue}
+          referenceBy={referenceBy}
+          referenceType="customer"
           {...props}
         />
       );
