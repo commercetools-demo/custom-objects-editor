@@ -19,21 +19,21 @@ const localizePath = (category: Category, showProductCount = false) => {
   return path;
 };
 
-const optionMapper = (data: Result<Category>) =>
-  data.categories.results.map((category: Category): TEntity => {
-    return {
-      id: category.id,
-      name: localizePath(category, false),
-      key: category.key,
-    };
-  });
-
 const CategorySearchInput: FC<
   React.HTMLAttributes<HTMLDivElement> & GenericSearchInputProps<Category>
 > = (props) => {
   const { dataLocale } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
   }));
+  const optionMapper = (data: Result<Category>) =>
+    data.categories.results.map((category: Category): TEntity => {
+      return {
+        id: category.id,
+        name: localizePath(category, false),
+        key: category.key,
+        disabled: props.referenceBy === 'key' && !category.key,
+      };
+    });
   const variableBuilder = (text: string) => ({
     fullText: { locale: dataLocale, text },
   });

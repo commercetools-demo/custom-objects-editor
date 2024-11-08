@@ -13,19 +13,19 @@ const localizePath = (customer: Customer) => {
   );
 };
 
-const optionMapper = (data: Result<Customer>) =>
-  data.customers.results.map((customer: Customer): TEntity => {
-    return {
-      id: customer.id,
-      name: localizePath(customer),
-      key: customer.key,
-      disabled: !customer.key,
-    };
-  });
-
 const CustomerSearchInput: FC<
   React.HTMLAttributes<HTMLDivElement> & GenericSearchInputProps<Customer>
 > = (props) => {
+  const optionMapper = (data: Result<Customer>) =>
+    data.customers.results.map((customer: Customer): TEntity => {
+      return {
+        id: customer.id,
+        name: localizePath(customer),
+        key: customer.key,
+        disabled: props.referenceBy === 'key' && !customer.key,
+      };
+    });
+
   const variableBuilder = (text: string) => ({
     where: `firstName = "${text}" or lastName = "${text}" or email= "${text}"`,
   });
