@@ -1,8 +1,9 @@
-import React from 'react';
+import TextInput from '@commercetools-uikit/text-input';
 import get from 'lodash/get';
+import React from 'react';
 import CategorySearchInput from './search-components/category';
-import { ReferenceInputProps } from './search-input/types';
 import CustomerSearchInput from './search-components/customer';
+import { ReferenceInputProps } from './search-input/types';
 
 const ReferenceInput: React.FC<
   React.HTMLAttributes<HTMLDivElement> & ReferenceInputProps
@@ -32,10 +33,17 @@ const ReferenceInput: React.FC<
       );
 
     default:
-      break;
+      return (
+        <TextInput
+          data-testid="field-type-reference"
+          name={`${props.name}.${referenceBy}`}
+          value={refValue}
+          hasError={props.hasError}
+          onChange={props.onChange}
+          onBlur={props.onBlur}
+        />
+      );
   }
-
-  return <div>ReferenceInput</div>;
 };
 
 export default ReferenceInput;
