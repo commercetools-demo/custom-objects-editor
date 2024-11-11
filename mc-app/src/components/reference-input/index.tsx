@@ -9,6 +9,15 @@ const referenceTypeToComponentMap: Record<string, any> = {
   customer: lazy(() => import('./search-components/customer')),
   product: lazy(() => import('./search-components/product')),
   cart: lazy(() => import('./search-components/cart')),
+  'cart-discount': lazy(() => import('./search-components/cart-discount')),
+};
+
+const referenceTypeToSingleValueMap: Record<string, string> = {
+  category: 'category',
+  customer: 'customer',
+  product: 'product',
+  cart: 'cart',
+  'cart-discount': 'cartDiscount',
 };
 
 const LoadingFallback: React.FC = () => <div className="p-4">Loading...</div>;
@@ -49,7 +58,7 @@ const ReferenceInput: React.FC<
           <Component
             value={value}
             referenceBy={referenceBy}
-            referenceType={referenceType}
+            referenceType={referenceTypeToSingleValueMap[referenceType]}
             {...props}
           />
         </Suspense>

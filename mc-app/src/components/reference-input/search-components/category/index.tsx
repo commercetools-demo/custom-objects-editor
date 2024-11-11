@@ -1,3 +1,4 @@
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { FC } from 'react';
 import AsyncSearchInput from '../../search-input/async-search-input';
 import { GenericSearchInputProps, Result } from '../../search-input/types';
@@ -6,7 +7,6 @@ import CategoryById from './category-by-id.graphql';
 import CategoryByKey from './category-by-key.graphql';
 import CategorySearch from './category-search.graphql';
 import { Category } from './types';
-import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const localizePath = (category: Category, showProductCount = false) => {
   let path = category.ancestors
