@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 interface Props {
   referenceBy: 'key' | 'id';
+  referenceType: string;
   initialValue: any;
   onChange(...args: unknown[]): unknown;
   onBlur(...args: unknown[]): unknown;
@@ -9,13 +10,12 @@ interface Props {
 
 export const useSearchInput = ({
   referenceBy,
+  referenceType,
   initialValue,
   onChange,
   onBlur,
 }: Props) => {
-  const [localValue, setLocalValue] = useState<Record<string, any>>({
-    [referenceBy]: initialValue,
-  });
+  const [localValue, setLocalValue] = useState<any>(initialValue);
 
   const handleChange = (event: any) => {
     setLocalValue(event.target.value);
@@ -23,8 +23,11 @@ export const useSearchInput = ({
       ...event,
       target: {
         ...event.target,
-        value: event.target.value?.[referenceBy],
-      },
+        value: {
+          [referenceBy]: event.target.value?.[referenceBy],
+          typeId: referenceType,
+        },
+      }
     });
   };
 
@@ -34,8 +37,11 @@ export const useSearchInput = ({
       ...event,
       target: {
         ...event.target,
-        value: event.target.value?.[referenceBy],
-      },
+        value: {
+          [referenceBy]: event.target.value?.[referenceBy],
+          typeId: referenceType,
+        },
+      }
     });
   };
   return {

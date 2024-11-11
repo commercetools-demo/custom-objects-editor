@@ -4,6 +4,7 @@ import React from 'react';
 import CategorySearchInput from './search-components/category';
 import CustomerSearchInput from './search-components/customer';
 import { ReferenceInputProps } from './search-input/types';
+import ProductSearchInput from './search-components/product';
 
 const ReferenceInput: React.FC<
   React.HTMLAttributes<HTMLDivElement> & ReferenceInputProps
@@ -16,7 +17,7 @@ const ReferenceInput: React.FC<
     case 'category':
       return (
         <CategorySearchInput
-          value={refValue}
+          value={value}
           referenceBy={referenceBy}
           referenceType="category"
           {...props}
@@ -25,9 +26,18 @@ const ReferenceInput: React.FC<
     case 'customer':
       return (
         <CustomerSearchInput
-          value={refValue}
+          value={value}
           referenceBy={referenceBy}
           referenceType="customer"
+          {...props}
+        />
+      );
+    case 'product':
+      return (
+        <ProductSearchInput
+          value={value}
+          referenceBy={referenceBy}
+          referenceType="product"
           {...props}
         />
       );

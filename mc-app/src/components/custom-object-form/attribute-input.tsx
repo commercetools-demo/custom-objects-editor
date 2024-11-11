@@ -242,7 +242,7 @@ const AttributeInput: FC<Props> = ({
         <Spacings.Stack scale="xs">
           <ReferenceInput
             data-testid="field-type-reference"
-            name={`${name}.${referenceBy}`}
+            name={name}
             value={value}
             onChange={onChange}
             onBlur={onBlur}

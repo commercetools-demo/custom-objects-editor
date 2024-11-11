@@ -29,6 +29,7 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
 }: React.HTMLAttributes<HTMLDivElement> & AsyncSearchInputProps<T, R>) => {
   const { value, handleChange, handleBlur } = useSearchInput({
     referenceBy,
+    referenceType,
     initialValue,
     onChange,
     onBlur,
@@ -51,7 +52,10 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
 
   const loadOptions = (text: string) =>
     refetch(variableBuilder(text)).then((response) =>
-      optionMapper(response.data)
+      optionMapper(response.data).map((option) => ({
+        ...option,
+        disabled: !option[referenceBy]
+      }))
     );
 
   return (

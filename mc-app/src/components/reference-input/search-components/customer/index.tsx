@@ -4,7 +4,7 @@ import { GenericSearchInputProps, Result } from '../../search-input/types';
 import { TEntity } from '../../types';
 import CustomerById from './customer-by-id.graphql';
 import CustomerByKey from './customer-by-key.graphql';
-import CategorySearch from './customer-search.graphql';
+import CustomerSearch from './customer-search.graphql';
 import { Customer } from './types';
 
 const localizePath = (customer: Customer) => {
@@ -22,7 +22,6 @@ const CustomerSearchInput: FC<
         id: customer.id,
         name: localizePath(customer),
         key: customer.key,
-        disabled: props.referenceBy === 'key' && !customer.key,
       };
     });
 
@@ -34,7 +33,7 @@ const CustomerSearchInput: FC<
       optionMapper={optionMapper}
       localizePath={localizePath}
       variableBuilder={variableBuilder}
-      searchQuery={CategorySearch}
+      searchQuery={CustomerSearch}
       byKeyQuery={CustomerByKey}
       byIdQuery={CustomerById}
       {...props}

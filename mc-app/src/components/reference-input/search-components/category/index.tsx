@@ -31,7 +31,6 @@ const CategorySearchInput: FC<
         id: category.id,
         name: localizePath(category, false),
         key: category.key,
-        disabled: props.referenceBy === 'key' && !category.key,
       };
     });
   const variableBuilder = (text: string) => ({
