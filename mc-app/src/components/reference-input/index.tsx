@@ -1,11 +1,38 @@
 import TextInput from '@commercetools-uikit/text-input';
 import get from 'lodash/get';
-import React from 'react';
-import CategorySearchInput from './search-components/category';
-import CustomerSearchInput from './search-components/customer';
+import React, { Suspense, lazy } from 'react';
 import { ReferenceInputProps } from './search-input/types';
-import ProductSearchInput from './search-components/product';
-import CartSearchInput from './search-components/cart';
+
+// TODO: fix dynamic imports
+const referenceTypeToComponentMap: Record<string, any> = {
+  category: lazy(() => import('./search-components/category')),
+  customer: lazy(() => import('./search-components/customer')),
+  product: lazy(() => import('./search-components/product')),
+  cart: lazy(() => import('./search-components/cart')),
+};
+
+const LoadingFallback: React.FC = () => <div className="p-4">Loading...</div>;
+
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <div className="text-red-500 p-4">Error loading component</div>;
+    }
+    return this.props.children;
+  }
+}
 
 const ReferenceInput: React.FC<
   React.HTMLAttributes<HTMLDivElement> & ReferenceInputProps
@@ -14,56 +41,31 @@ const ReferenceInput: React.FC<
   const referenceType = get(reference, 'type');
   const refValue = get(value, referenceBy, '');
 
-  switch (referenceType) {
-    case 'category':
-      return (
-        <CategorySearchInput
-          value={value}
-          referenceBy={referenceBy}
-          referenceType="category"
-          {...props}
-        />
-      );
-    case 'customer':
-      return (
-        <CustomerSearchInput
-          value={value}
-          referenceBy={referenceBy}
-          referenceType="customer"
-          {...props}
-        />
-      );
-    case 'product':
-      return (
-        <ProductSearchInput
-          value={value}
-          referenceBy={referenceBy}
-          referenceType="product"
-          {...props}
-        />
-      );
-    case 'cart':
-      return (
-        <CartSearchInput
-          value={value}
-          referenceBy={referenceBy}
-          referenceType="cart"
-          {...props}
-        />
-      );
-
-    default:
-      return (
-        <TextInput
-          data-testid="field-type-reference"
-          name={`${props.name}.${referenceBy}`}
-          value={refValue}
-          hasError={props.hasError}
-          onChange={props.onChange}
-          onBlur={props.onBlur}
-        />
-      );
+  if (referenceType && referenceTypeToComponentMap[referenceType]) {
+    const Component = referenceTypeToComponentMap[referenceType];
+    return (
+      <ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          <Component
+            value={value}
+            referenceBy={referenceBy}
+            referenceType={referenceType}
+            {...props}
+          />
+        </Suspense>
+      </ErrorBoundary>
+    );
   }
+  return (
+    <TextInput
+      data-testid="field-type-reference"
+      name={`${props.name}.${referenceBy}`}
+      value={refValue}
+      hasError={props.hasError}
+      onChange={props.onChange}
+      onBlur={props.onBlur}
+    />
+  );
 };
 
 export default ReferenceInput;
