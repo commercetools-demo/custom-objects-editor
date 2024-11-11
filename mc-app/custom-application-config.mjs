@@ -18,6 +18,7 @@ const config = {
   },
   additionalEnv:{
     customObjectEndpoint: '${env:CUSTOM_OBJECT_ENDPOINT}',
+    useCustomObjectEndpoint: '${env:USE_CUSTOM_OBJECT_ENTPOINT}',
   },
   headers: {
     csp: {
