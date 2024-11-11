@@ -27,7 +27,7 @@ export const useSearchInput = ({
           [referenceBy]: event.target.value?.[referenceBy],
           typeId: referenceType,
         },
-      }
+      },
     });
   };
 
@@ -41,7 +41,7 @@ export const useSearchInput = ({
           [referenceBy]: event.target.value?.[referenceBy],
           typeId: referenceType,
         },
-      }
+      },
     });
   };
   return {

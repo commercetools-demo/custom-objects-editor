@@ -54,7 +54,7 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
     refetch(variableBuilder(text)).then((response) =>
       optionMapper(response.data).map((option) => ({
         ...option,
-        disabled: !option[referenceBy]
+        disabled: !option[referenceBy],
       }))
     );
 
