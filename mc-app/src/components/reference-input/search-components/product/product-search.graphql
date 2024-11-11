@@ -1,0 +1,20 @@
+query SearchProducts ($where:String!, $limit: Int!, $offset: Int!, $locale: Locale!) {
+  products (where: $where, limit: $limit
+    offset: $offset) {
+    results {
+      id
+      productType {
+        key
+      }
+      key
+      masterData {
+        current {
+          name (locale: $locale)
+          masterVariant {
+            sku
+          }
+        }
+      }
+    }
+  }
+}
