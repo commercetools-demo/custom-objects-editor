@@ -3,7 +3,6 @@ import get from 'lodash/get';
 import React, { Suspense, lazy } from 'react';
 import { ReferenceInputProps } from './search-input/types';
 
-// TODO: fix dynamic imports
 const referenceTypeToComponentMap: Record<string, any> = {
   category: lazy(() => import('./search-components/category')),
   customer: lazy(() => import('./search-components/customer')),
@@ -13,12 +12,23 @@ const referenceTypeToComponentMap: Record<string, any> = {
   channel: lazy(() => import('./search-components/channel')),
   'customer-group': lazy(() => import('./search-components/customer-group')),
   'discount-code': lazy(() => import('./search-components/discount-code')),
+  'key-value-document': lazy(
+    () => import('./search-components/key-value-document')
+  ),
 };
+
+const restrictedReferenceTypesToReferenceBy = [
+  {
+    referenceType: 'key-value-document',
+    referenceBy: 'key',
+  },
+];
 
 const referenceTypeToSingleValueMap: Record<string, string> = {
   'cart-discount': 'cartDiscount',
   'customer-group': 'customerGroup',
   'discount-code': 'discountCode',
+  'key-value-document': 'customObject',
 };
 
 const LoadingFallback: React.FC = () => <div className="p-4">Loading...</div>;
@@ -50,23 +60,41 @@ const ReferenceInput: React.FC<
   const referenceBy: 'id' | 'key' = get(reference, 'by', 'id') as 'id' | 'key';
   const referenceType = get(reference, 'type');
   const refValue = get(value, referenceBy, '');
+  const inRestrictedList = restrictedReferenceTypesToReferenceBy.some((item) => {
+    return (
+      item.referenceType === referenceType &&
+      item.referenceBy === referenceBy
+    );
+  });
 
   if (referenceType && referenceTypeToComponentMap[referenceType]) {
-    const Component = referenceTypeToComponentMap[referenceType];
-    const singleValueQueryDataObject = referenceTypeToSingleValueMap[referenceType] ? referenceTypeToSingleValueMap[referenceType] : referenceType;
-    return (
-      <ErrorBoundary>
-        <Suspense fallback={<LoadingFallback />}>
-          <Component
-            value={value}
-            referenceBy={referenceBy}
-            referenceType={singleValueQueryDataObject}
-            {...props}
-          />
-        </Suspense>
-      </ErrorBoundary>
-    );
+    if (!inRestrictedList ) {
+      const optionMapper = (data: any) => ({
+        id: get(data, referenceBy),
+        name: get(data, 'name'),
+        key: get(data, 'key'),
+      });
+      const Component = referenceTypeToComponentMap[referenceType];
+      const singleValueQueryDataObject = referenceTypeToSingleValueMap[
+        referenceType
+      ]
+        ? referenceTypeToSingleValueMap[referenceType]
+        : referenceType;
+      return (
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingFallback />}>
+            <Component
+              value={value}
+              referenceBy={referenceBy}
+              referenceType={singleValueQueryDataObject}
+              {...props}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      );
+    }
   }
+
   return (
     <TextInput
       data-testid="field-type-reference"
