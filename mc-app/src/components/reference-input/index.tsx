@@ -1,7 +1,11 @@
+import { ExternalLinkIcon } from '@commercetools-uikit/icons';
+import Spacings from '@commercetools-uikit/spacings';
 import TextInput from '@commercetools-uikit/text-input';
 import get from 'lodash/get';
 import React, { Suspense, lazy } from 'react';
 import { ReferenceInputProps } from './search-input/types';
+import { Link } from 'react-router-dom';
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 
 const referenceTypeToComponentMap: Record<string, any> = {
   category: lazy(() => import('./search-components/category')),
@@ -15,6 +19,16 @@ const referenceTypeToComponentMap: Record<string, any> = {
   'key-value-document': lazy(
     () => import('./search-components/key-value-document')
   ),
+};
+
+const referenceTypeToMCPageMap: Record<string, string> = {
+  category: '/categories',
+  customer: '/customers',
+  product: '/products',
+  'cart-discount': '/discounts/carts',
+  channel: '/settings/project/channels',
+  'customer-group': '/customers/customer-groups',
+  'discount-code': '/discounts/codes',
 };
 
 const restrictedReferenceTypesToReferenceBy = [
@@ -57,23 +71,23 @@ class ErrorBoundary extends React.Component<
 const ReferenceInput: React.FC<
   React.HTMLAttributes<HTMLDivElement> & ReferenceInputProps
 > = ({ reference, value, ...props }) => {
+  const { project } = useApplicationContext();
   const referenceBy: 'id' | 'key' = get(reference, 'by', 'id') as 'id' | 'key';
   const referenceType = get(reference, 'type');
   const refValue = get(value, referenceBy, '');
-  const inRestrictedList = restrictedReferenceTypesToReferenceBy.some((item) => {
-    return (
-      item.referenceType === referenceType &&
-      item.referenceBy === referenceBy
-    );
-  });
+  const inRestrictedList = restrictedReferenceTypesToReferenceBy.some(
+    (item) => {
+      return (
+        item.referenceType === referenceType && item.referenceBy === referenceBy
+      );
+    }
+  );
+
+  const externalUrl = referenceBy === 'id' && referenceTypeToMCPageMap[referenceType as string] ? 
+    `/${project?.key}/${referenceTypeToMCPageMap[referenceType as string]}/${refValue}` : '';
 
   if (referenceType && referenceTypeToComponentMap[referenceType]) {
-    if (!inRestrictedList ) {
-      const optionMapper = (data: any) => ({
-        id: get(data, referenceBy),
-        name: get(data, 'name'),
-        key: get(data, 'key'),
-      });
+    if (!inRestrictedList) {
       const Component = referenceTypeToComponentMap[referenceType];
       const singleValueQueryDataObject = referenceTypeToSingleValueMap[
         referenceType
@@ -83,12 +97,20 @@ const ReferenceInput: React.FC<
       return (
         <ErrorBoundary>
           <Suspense fallback={<LoadingFallback />}>
-            <Component
-              value={value}
-              referenceBy={referenceBy}
-              referenceType={singleValueQueryDataObject}
-              {...props}
-            />
+            <Spacings.Inline alignItems="center" justifyContent="space-between">
+              <Component
+                value={value}
+                referenceBy={referenceBy}
+                referenceType={singleValueQueryDataObject}
+                {...props}
+              />
+              {!!externalUrl && <Link
+                to={externalUrl}
+                target="_blank"
+              >
+                <ExternalLinkIcon color='info' />
+              </Link>}
+            </Spacings.Inline>
           </Suspense>
         </ErrorBoundary>
       );

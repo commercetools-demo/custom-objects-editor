@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { PageNotFound } from '@commercetools-frontend/application-components';
+
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { GRAPHQL_TARGETS } from '@commercetools-frontend/constants';
 import AsyncSelectInput from '@commercetools-uikit/async-select-input';
