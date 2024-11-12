@@ -10,13 +10,10 @@ const referenceTypeToComponentMap: Record<string, any> = {
   product: lazy(() => import('./search-components/product')),
   cart: lazy(() => import('./search-components/cart')),
   'cart-discount': lazy(() => import('./search-components/cart-discount')),
+  channel: lazy(() => import('./search-components/channel')),
 };
 
 const referenceTypeToSingleValueMap: Record<string, string> = {
-  category: 'category',
-  customer: 'customer',
-  product: 'product',
-  cart: 'cart',
   'cart-discount': 'cartDiscount',
 };
 
@@ -52,13 +49,14 @@ const ReferenceInput: React.FC<
 
   if (referenceType && referenceTypeToComponentMap[referenceType]) {
     const Component = referenceTypeToComponentMap[referenceType];
+    const singleValueQueryDataObject = referenceTypeToSingleValueMap[referenceType] ? referenceTypeToSingleValueMap[referenceType] : referenceType;
     return (
       <ErrorBoundary>
         <Suspense fallback={<LoadingFallback />}>
           <Component
             value={value}
             referenceBy={referenceBy}
-            referenceType={referenceTypeToSingleValueMap[referenceType]}
+            referenceType={singleValueQueryDataObject}
             {...props}
           />
         </Suspense>
