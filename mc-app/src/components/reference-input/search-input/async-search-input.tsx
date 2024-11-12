@@ -5,14 +5,13 @@ import AsyncSelectInput from '@commercetools-uikit/async-select-input';
 import { SearchIcon } from '@commercetools-uikit/icons';
 import { SingleValueProps } from 'react-select';
 import { TEntity } from '../types';
-import { useSearchInput } from './hooks/use-search-input';
 import { AsyncSelectOption } from './search-option';
 import { SearchSingleValue } from './search-single-value';
 import { AsyncSearchInputProps, Result } from './types';
 
 const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
   name,
-  value: initialValue,
+  value,
   placeholder,
   hasError,
   referenceBy,
@@ -27,13 +26,6 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
   localizePath,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & AsyncSearchInputProps<T, R>) => {
-  const { value, handleChange, handleBlur } = useSearchInput({
-    referenceBy,
-    referenceType,
-    initialValue,
-    onChange,
-    onBlur,
-  });
   const { dataLocale } = useApplicationContext((context) => ({
     dataLocale: context.dataLocale ?? '',
   }));
@@ -62,7 +54,7 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
     <AsyncSelectInput
       {...props}
       isOptionDisabled={(option: any) => !!option.disabled}
-      name={name}
+      name={`${name}.${referenceBy}`}
       value={value}
       placeholder={placeholder}
       isClearable
@@ -84,8 +76,24 @@ const AsyncSearchInput = <T extends TEntity, R extends Result<T>>({
         DropdownIndicator: () => <SearchIcon color="primary" />,
       }}
       hasError={hasError}
-      onBlur={handleBlur}
-      onChange={handleChange}
+      onBlur={(event) => {
+        onBlur({
+          ...event,
+          target: {
+            ...event.target,
+            value: (event.target.value as TEntity)?.[referenceBy],
+          },
+        });
+      }}
+      onChange={(event) => {
+        onChange({
+          ...event,
+          target: {
+            ...event.target,
+            value: (event.target.value as TEntity)?.[referenceBy],
+          },
+        });
+      }}
     />
   );
 };
