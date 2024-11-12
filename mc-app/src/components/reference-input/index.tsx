@@ -11,10 +11,12 @@ const referenceTypeToComponentMap: Record<string, any> = {
   cart: lazy(() => import('./search-components/cart')),
   'cart-discount': lazy(() => import('./search-components/cart-discount')),
   channel: lazy(() => import('./search-components/channel')),
+  'customer-group': lazy(() => import('./search-components/customer-group')),
 };
 
 const referenceTypeToSingleValueMap: Record<string, string> = {
   'cart-discount': 'cartDiscount',
+  'customer-group': 'customerGroup',
 };
 
 const LoadingFallback: React.FC = () => <div className="p-4">Loading...</div>;
