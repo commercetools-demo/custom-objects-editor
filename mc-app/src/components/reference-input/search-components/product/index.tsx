@@ -1,3 +1,4 @@
+import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
 import { FC } from 'react';
 import AsyncSearchInput from '../../search-input/async-search-input';
 import { GenericSearchInputProps, Result } from '../../search-input/types';
@@ -5,8 +6,11 @@ import { TEntity } from '../../types';
 import ProductById from './product-by-id.graphql';
 import ProductByKey from './product-by-key.graphql';
 import ProductSearch from './product-search.graphql';
-import { Product } from './types';
+import { Product, ProductProjectionItem } from './types';
 
+const localizePathProductprojection = (product: ProductProjectionItem) => {
+  return `${product.name} (${product.masterVariant?.sku})`;
+};
 const localizePath = (product: Product) => {
   return `${product.masterData?.current?.name} (${product.masterData?.current?.masterVariant?.sku})`;
 };
@@ -14,17 +18,19 @@ const localizePath = (product: Product) => {
 const ProductSearchInput: FC<
   React.HTMLAttributes<HTMLDivElement> & GenericSearchInputProps<Product>
 > = (props) => {
+  const { dataLocale } = useApplicationContext((context) => context);
   const optionMapper = (data: Result<Product>) =>
-    data.products.results.map((product: Product): TEntity => {
+    data.productProjectionSearch.results.map((product: Product): TEntity => {
       return {
         id: product.id,
-        name: localizePath(product),
+        name: localizePathProductprojection(product),
         key: product.key,
       };
     });
 
   const variableBuilder = (text: string) => ({
-    where: `key = "${text}" or masterData(current(name(en-US = "${text}"))) or masterData(current(masterVariant(sku = "${text}")))`,
+    text,
+    locale: dataLocale,
   });
   return (
     <AsyncSearchInput<Product, Result<Product>>

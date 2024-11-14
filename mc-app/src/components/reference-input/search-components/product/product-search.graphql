@@ -1,19 +1,15 @@
-query SearchProducts ($where:String!, $limit: Int!, $offset: Int!, $locale: Locale!) {
-  products (where: $where, limit: $limit
-    offset: $offset) {
+query SearchProducts($text: String!, $limit: Int!, $offset: Int!, $locale: Locale!) {
+  productProjectionSearch(text: $text, limit: $limit, offset: $offset, locale:$locale) {
+    total
     results {
       id
       productType {
         key
       }
       key
-      masterData {
-        current {
-          name (locale: $locale)
-          masterVariant {
-            sku
-          }
-        }
+      name(locale:$locale)
+      masterVariant {
+        sku
       }
     }
   }

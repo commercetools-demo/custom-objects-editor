@@ -13,3 +13,12 @@ export interface Product extends TEntity {
     };
   };
 }
+
+export interface ProductProjectionItem extends TEntity {
+  productType: {
+    key?: string;
+  };
+  masterVariant?: {
+    sku?: string;
+  };
+}
