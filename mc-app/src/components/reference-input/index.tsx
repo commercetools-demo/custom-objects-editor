@@ -22,13 +22,13 @@ const referenceTypeToComponentMap: Record<string, any> = {
 };
 
 const referenceTypeToMCPageMap: Record<string, string> = {
-  category: '/categories',
-  customer: '/customers',
-  product: '/products',
-  'cart-discount': '/discounts/carts',
-  channel: '/settings/project/channels',
-  'customer-group': '/customers/customer-groups',
-  'discount-code': '/discounts/codes',
+  category: 'categories',
+  customer: 'customers',
+  product: 'products',
+  'cart-discount': 'discounts/carts',
+  channel: 'settings/project/channels',
+  'customer-group': 'customers/customer-groups',
+  'discount-code': 'discounts/codes',
 };
 
 const restrictedReferenceTypesToReferenceBy = [
